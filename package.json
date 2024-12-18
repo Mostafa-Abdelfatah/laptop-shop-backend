@@ -1,0 +1,28 @@
+{
+  "name": "laptop-shop-backend",
+  "version": "1.0.0",
+  "description": "Backend for the Laptop Shop project, built using Node.js, Express.js, and MongoDB. This repository provides RESTful APIs for managing products, users, and orders, along with authentication and secure access using JWT.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mostafa-Abdelfatah/laptop-shop-backend.git"
+  },
+  "author": "Mostafa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mostafa-Abdelfatah/laptop-shop-backend/issues"
+  },
+  "homepage": "https://github.com/Mostafa-Abdelfatah/laptop-shop-backend#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongodb": "^6.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
