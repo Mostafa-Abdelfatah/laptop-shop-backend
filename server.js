@@ -6,7 +6,7 @@ const app = express();
 const DB_URI = process.env.DB_URI;
 const port = process.env.PORT;
 
-const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true }};
 
 async function connectDB() {
   try {
