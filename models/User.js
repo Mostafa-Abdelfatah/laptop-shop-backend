@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
-  Fname:{
+  Fname: {
     type: String,
     required: [true, 'Please add a name']
   },
-  Lname:{
+  Lname: {
     type: String,
-    required: [true, 'Please add a name']
+    required: false
   },
   phone: {
     type: String,
@@ -16,17 +16,18 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  image:{
-    type:String
+  image: {
+    type: String,
+    required: false
   },
-  password:{
-    type:String,
-    required:true
+  email: {
+    type: String,
+    required: true,
+    unique: true
   },
-  email:{
-    type:String,
-    required:true,
-    unique:true
+  password: {
+    type: String,
+    required: true
   },
   Date_created: {
     type: Date,
