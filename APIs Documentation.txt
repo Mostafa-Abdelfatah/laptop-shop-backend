@@ -462,7 +462,7 @@ Retrieve a paginated list of laptops with optional limit and page queries.
 
 **Endpoint:**
 ```
-GET /laptop/getByName/:name
+GET /laptop/getLaptopsByName/:name
 ```
 
 **Description:**
@@ -527,7 +527,7 @@ Retrieve laptops with a name matching the query, using pagination.
 
 **Endpoint:**
 ```
-GET /laptop/getById/:id
+GET /laptop/getLaptopById/:id
 ```
 
 **Description:**
@@ -568,7 +568,7 @@ Retrieve a laptop by its unique ID.
 
 **Endpoint:**
 ```
-POST /laptop/add
+POST /laptop/addLaptop
 ```
 
 **Description:**
@@ -616,7 +616,7 @@ Add a new laptop to the inventory.
 
 **Endpoint:**
 ```
-PUT /laptop/update/:id
+PUT /laptop/updateLaptopById/:id
 ```
 
 **Description:**
@@ -670,7 +670,7 @@ Update the details of a laptop by its unique ID.
 
 **Endpoint:**
 ```
-DELETE /laptop/delete/:id
+DELETE /laptop/deleteLaptopById/:id
 ```
 
 **Description:**
