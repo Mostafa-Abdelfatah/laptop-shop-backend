@@ -576,13 +576,14 @@ Add a new laptop to the inventory.
 
 **Request Body:**
 
-| Field         | Type    | Required | Description                   |
-| ------------- | ------- | -------- | ----------------------------- |
-| `name`        | String  | Yes      | The name of the laptop.       |
-| `description` | String  | Yes      | The description of the laptop.|
-| `photo`       | String  | No       | URL for the laptop photo.     |
-| `stock`       | Integer | Yes      | The number of units in stock. |
-| `price`       | Number  | Yes      | The price of the laptop.      |
+| Field         | Type    | Required | Description                         |
+| ------------- | ------- | -------- | ------------------------------------|
+| `name`        | String  | Yes      | The name of the laptop.             |
+| `description` | String  | Yes      | The description of the laptop.      |
+| `photo`       | String  | No       | URL for the laptop photo.           |
+| `stock`       | Integer | Yes      | The number of units in stock.       |
+| `price`       | Number  | Yes      | The price of the laptop.            |
+|`category_id`  | ObjectId| Yes      | every laptop should have a category |
 
 **Responses:**
 
@@ -681,6 +682,129 @@ Delete a laptop by its unique ID.
 | Parameter | Type   | Required | Description                   |
 | --------- | ------ | -------- | ----------------------------- |
 | `id`      | String | Yes      | The                           |
+
+
+
+### **7)Get Laptops by Category ID**
+
+**Endpoint:**
+```
+GET /laptop/getLaptopsByCategoryId/:id
+```
+**Description:**
+Retrieve laptops associated with a specific category ID, with optional pagination support.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                         |
++-----------+--------+----------+-------------------------------------+
+| id        | String | Yes      | The unique ID of the category.      |
+
+**Query Parameters**
+
+| Parameter | Type    | Required | Default | Description                                |
++-----------+---------+----------+---------+--------------------------------------------+
+| page      | Integer | No       | 1       | The page number to retrieve. Starts at 1.  |
+| limit     | Integer | No       | 10      | The number of items to retrieve per page.  |
+
+Response:
+{
+  "totalLaptops": 15,
+  "totalPages": 2,
+  "currentPage": 1,
+  "laptops": [
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1234",
+      "name": "Dell Inspiron",
+      "description": "Affordable laptop",
+      "stock": 10,
+      "price": 800,
+      "photo": "https://example.com/dell-inspiron.jpg",
+      "category_id": "63f15d01fabcde1234",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    },
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1235",
+      "name": "Dell XPS",
+      "description": "High-performance laptop",
+      "stock": 5,
+      "price": 1500,
+      "photo": "https://example.com/dell-xps.jpg",
+      "category_id": "63f15d01fabcde1234",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    }
+  ]
+}
+
+Here’s the documentation reformatted to make it easily copyable into a plain text file with ASCII-style tables:
+Get Laptops by Category ID
+
+Endpoint:
+
+GET /laptop/getLaptopsByCategoryId/:id
+
+Description: Retrieve laptops associated with a specific category ID, with optional pagination support.
+
+Path Parameters:
+
++-----------+--------+----------+-------------------------------------+
+| Parameter | Type   | Required | Description                         |
++-----------+--------+----------+-------------------------------------+
+| id        | String | Yes      | The unique ID of the category.      |
++-----------+--------+----------+-------------------------------------+
+
+Query Parameters:
+
++-----------+---------+----------+---------+--------------------------------------------+
+| Parameter | Type    | Required | Default | Description                                |
++-----------+---------+----------+---------+--------------------------------------------+
+| page      | Integer | No       | 1       | The page number to retrieve. Starts at 1.  |
+| limit     | Integer | No       | 10      | The number of items to retrieve per page.  |
++-----------+---------+----------+---------+--------------------------------------------+
+
+Response:
+Success (200):
+
+{
+  "totalLaptops": 15,
+  "totalPages": 2,
+  "currentPage": 1,
+  "laptops": [
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1234",
+      "name": "Dell Inspiron",
+      "description": "Affordable laptop",
+      "stock": 10,
+      "price": 800,
+      "photo": "https://example.com/dell-inspiron.jpg",
+      "category_id": "63f15d01fabcde1234",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    },
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1235",
+      "name": "Dell XPS",
+      "description": "High-performance laptop",
+      "stock": 5,
+      "price": 1500,
+      "photo": "https://example.com/dell-xps.jpg",
+      "category_id": "63f15d01fabcde1234",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    }
+  ]
+}
+
+Error Responses:
++-------------+-----------------------------------------+---------------------------------------------+
+| Status Code | Message                                 | Description                                 |
++-------------+-----------------------------------------+---------------------------------------------+
+| 404         | "No laptops found for this category"    | No laptops were found for the given category ID. |
+| 500         | "Error fetching laptops by category"    | A server-side error occurred.              |
++-------------+-----------------------------------------+---------------------------------------------+
+
 
 --------------------------------------------------------------------------------------
 
