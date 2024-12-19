@@ -5,7 +5,11 @@ const userRoutes = require('./routes/userRoutes.js');
 const laptopRoutes = require('./routes/laptopRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
 const brandRoutes = require('./routes/brandRoutes')
+
 const rateRoutes = require('./routes/rateRoutes')
+
+const cartRoutes = require('./routes/cartRoutes')
+
 
 app.use(cors());
 app.use(express.json()); // this allow us to use json to send and receive data
@@ -27,4 +31,8 @@ app.use('/user', userRoutes)
 app.use('/laptop', laptopRoutes)
 app.use('/category', categoryRoutes)
 app.use('/brand', brandRoutes)
+
 app.use('/rate', rateRoutes)
+
+app.use('/cart', cartRoutes)
+
