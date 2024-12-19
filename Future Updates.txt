@@ -1,3 +1,5 @@
 1) input Validation by joi or exppress-validator
 2) filterion for labtop
 3) user auth
+4) cart & orders
+5) deploy
