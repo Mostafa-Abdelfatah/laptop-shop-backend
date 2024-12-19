@@ -404,3 +404,284 @@ Delete a user by their unique ID.
 
 **Notes:**
 - This operation is irreversible. Ensure the correct user ID is provided before deletion.
+-----------------------------------------------------------------------------------------------------------------------------------
+
+### Laptop APIs
+
+---
+
+### **1) Get All Laptops**
+
+**Endpoint:**
+```
+GET /laptop/getAllLaptops
+```
+
+**Description:**
+Retrieve a paginated list of laptops with optional limit and page queries.
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                                  |
+| --------- | ------- | -------- | ------- | -------------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.  |
+| `limit`   | Integer | No       | `10`    | The number of laptops to retrieve per page.  |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalLaptops": 50,
+  "totalPages": 5,
+  "currentPage": 1,
+  "laptops": [
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1234",
+      "name": "Dell Inspiron",
+      "description": "Affordable laptop",
+      "stock": 10,
+      "price": 800,
+      "photo": "https://example.com/dell-inspiron.jpg",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                                    | Description                                |
+| ----------- | ------------------------------------------ | ------------------------------------------ |
+| `500`       | "Internal Server Error"                    | A server-side error occurred.              |
+
+---
+
+### **2) Get Laptops by Name**
+
+**Endpoint:**
+```
+GET /laptop/getByName/:name
+```
+
+**Description:**
+Retrieve laptops with a name matching the query, using pagination.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                          |
+| --------- | ------ | -------- | ------------------------------------ |
+| `name`    | String | Yes      | The partial or full name of a laptop.|
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                                  |
+| --------- | ------- | -------- | ------- | -------------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.  |
+| `limit`   | Integer | No       | `10`    | The number of laptops to retrieve per page.  |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalLaptops": 2,
+  "totalPages": 1,
+  "currentPage": 1,
+  "laptops": [
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1234",
+      "name": "Dell Inspiron",
+      "description": "Affordable laptop",
+      "stock": 10,
+      "price": 800,
+      "photo": "https://example.com/dell-inspiron.jpg",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    },
+    {
+      "_id": "64a61b09c2d7e9ff3a6e1235",
+      "name": "Dell XPS",
+      "description": "High-performance laptop",
+      "stock": 5,
+      "price": 1500,
+      "photo": "https://example.com/dell-xps.jpg",
+      "Date_created": "2024-12-18T12:00:00.000Z",
+      "Date_updated": "2024-12-18T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                         | Description                                |
+| ----------- | ------------------------------- | ------------------------------------------ |
+| `404`       | "No laptops found with this name" | No laptops matched the search query.     |
+| `500`       | "Internal Server Error"         | A server-side error occurred.              |
+
+---
+
+### **3) Get Laptop by ID**
+
+**Endpoint:**
+```
+GET /laptop/getById/:id
+```
+
+**Description:**
+Retrieve a laptop by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                   |
+| --------- | ------ | -------- | ----------------------------- |
+| `id`      | String | Yes      | The unique ID of the laptop.  |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "_id": "64a61b09c2d7e9ff3a6e1234",
+  "name": "Dell Inspiron",
+  "description": "Affordable laptop",
+  "stock": 10,
+  "price": 800,
+  "photo": "https://example.com/dell-inspiron.jpg",
+  "Date_created": "2024-12-18T12:00:00.000Z",
+  "Date_updated": "2024-12-18T12:00:00.000Z"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                                |
+| ----------- | ----------------------- | ------------------------------------------ |
+| `404`       | "Laptop not found"      | No laptop exists with the given ID.        |
+| `500`       | "Internal Server Error" | A server-side error occurred.              |
+
+---
+
+### **4) Add Laptop**
+
+**Endpoint:**
+```
+POST /laptop/add
+```
+
+**Description:**
+Add a new laptop to the inventory.
+
+**Request Body:**
+
+| Field         | Type    | Required | Description                   |
+| ------------- | ------- | -------- | ----------------------------- |
+| `name`        | String  | Yes      | The name of the laptop.       |
+| `description` | String  | Yes      | The description of the laptop.|
+| `photo`       | String  | No       | URL for the laptop photo.     |
+| `stock`       | Integer | Yes      | The number of units in stock. |
+| `price`       | Number  | Yes      | The price of the laptop.      |
+
+**Responses:**
+
+#### **Success (201):**
+```json
+{
+  "message": "Laptop added successfully",
+  "laptop": {
+    "_id": "64a61b09c2d7e9ff3a6e1234",
+    "name": "Dell Inspiron",
+    "description": "Affordable laptop",
+    "stock": 10,
+    "price": 800,
+    "photo": "https://example.com/dell-inspiron.jpg",
+    "Date_created": "2024-12-18T12:00:00.000Z",
+    "Date_updated": "2024-12-18T12:00:00.000Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                     |
+| ----------- | ----------------------- | --------------------------------|
+| `400`       | "Invalid data"          | Missing or invalid request data.|
+| `500`       | "Internal Server Error" | A server-side error occurred.   |
+
+---
+
+### **5) Update Laptop by ID**
+
+**Endpoint:**
+```
+PUT /laptop/update/:id
+```
+
+**Description:**
+Update the details of a laptop by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                   |
+| --------- | ------ | -------- | ----------------------------- |
+| `id`      | String | Yes      | The unique ID of the laptop.  |
+
+**Request Body:**
+
+| Field         | Type    | Required | Description                   |
+| ------------- | ------- | -------- | ----------------------------- |
+| `name`        | String  | No       | The name of the laptop.       |
+| `description` | String  | No       | The description of the laptop.|
+| `photo`       | String  | No       | URL for the laptop photo.     |
+| `stock`       | Integer | No       | The number of units in stock. |
+| `price`       | Number  | No       | The price of the laptop.      |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Laptop updated successfully",
+  "laptop": {
+    "_id": "64a61b09c2d7e9ff3a6e1234",
+    "name": "Dell Inspiron Updated",
+    "description": "Affordable laptop with updated specs",
+    "stock": 15,
+    "price": 850,
+    "photo": "https://example.com/dell-inspiron-updated.jpg",
+    "Date_created": "2024-12-18T12:00:00.000Z",
+    "Date_updated": "2024-12-19T12:00:00.000Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                                |
+| ----------- | ----------------------- | ------------------------------------------ |
+| `404`       | "Laptop not found"      | No laptop exists with the given ID.        |
+| `500`       | "Internal Server Error" | A server-side error occurred.              |
+
+---
+
+### **6) Delete Laptop by ID**
+
+**Endpoint:**
+```
+DELETE /laptop/delete/:id
+```
+
+**Description:**
+Delete a laptop by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                   |
+| --------- | ------ | -------- | ----------------------------- |
+| `id`      | String | Yes      | The                           |
+
+--------------------------------------------------------------------------------------
+
+
