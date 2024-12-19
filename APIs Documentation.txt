@@ -1417,6 +1417,347 @@ Delete a brand by its exact name.
 - When deleting a brand, ensure there are no laptops associated with it to maintain data integrity
 ----------------------------------------------------------------------------------------------------------------------------
 
+Rate APIs:-
+
+### **1) Get All Rates**
+
+**Endpoint:**
+```
+GET /rate/getAllRates
+```
+
+**Description:**
+Retrieve a paginated list of all rates.
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalRates": 25,
+  "totalPages": 3,
+  "currentPage": 1,
+  "rates": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "rate": 4,
+      "comment": "Great laptop, excellent performance",
+      "user_id": "507f1f77bcf86cd799439011",
+      "laptop_id": "507f1f77bcf86cd799439012",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                | Description                   |
+| ----------- | ---------------------- | ----------------------------- |
+| `500`       | "Error fetching rates" | A server-side error occurred. |
+
+---
+
+### **2) Get Rate by ID**
+
+**Endpoint:**
+```
+GET /rate/getRateById/:id
+```
+
+**Description:**
+Retrieve a single rate by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                       |
+| --------- | ------ | -------- | --------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the rate.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "_id": "63a1b2c34f8e5c0024c6ef12",
+  "rate": 4,
+  "comment": "Great laptop, excellent performance",
+  "user_id": "507f1f77bcf86cd799439011",
+  "laptop_id": "507f1f77bcf86cd799439012",
+  "Date_created": "2024-12-19T10:10:30.511Z",
+  "Date_updated": "2024-12-19T10:10:30.511Z"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                        | Description                      |
+| ----------- | ------------------------------ | -------------------------------- |
+| `404`       | "Rate not found"               | No rate exists with the given ID.|
+| `500`       | "Error fetching rate by ID"    | A server-side error occurred.    |
+
+---
+
+### **3) Get Rates by User ID**
+
+**Endpoint:**
+```
+GET /rate/getRatesByUserId/:user_id
+```
+
+**Description:**
+Retrieve all rates submitted by a specific user, with pagination support.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                       |
+| --------- | ------ | -------- | --------------------------------- |
+| `user_id` | String | Yes      | The unique identifier of the user.|
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalRates": 5,
+  "totalPages": 1,
+  "currentPage": 1,
+  "rates": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "rate": 4,
+      "comment": "Great laptop, excellent performance",
+      "user_id": "507f1f77bcf86cd799439011",
+      "laptop_id": "507f1f77bcf86cd799439012",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                           | Description                             |
+| ----------- | --------------------------------- | --------------------------------------- |
+| `500`       | "Error fetching rates by user ID" | A server-side error occurred.           |
+
+---
+
+### **4) Get Rates by Laptop ID**
+
+**Endpoint:**
+```
+GET /rate/getRatesByLaptopId/:laptop_id
+```
+
+**Description:**
+Retrieve all rates for a specific laptop, with pagination support.
+
+**Path Parameters:**
+
+| Parameter   | Type   | Required | Description                         |
+| ----------- | ------ | -------- | ----------------------------------- |
+| `laptop_id` | String | Yes      | The unique identifier of the laptop.|
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalRates": 8,
+  "totalPages": 1,
+  "currentPage": 1,
+  "rates": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "rate": 4,
+      "comment": "Great laptop, excellent performance",
+      "user_id": "507f1f77bcf86cd799439011",
+      "laptop_id": "507f1f77bcf86cd799439012",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                             | Description                   |
+| ----------- | ----------------------------------- | ----------------------------- |
+| `500`       | "Error fetching rates by laptop ID" | A server-side error occurred. |
+
+---
+
+### **5) Add Rate**
+
+**Endpoint:**
+```
+POST /rate/addRate
+```
+
+**Description:**
+Create a new rate for a laptop.
+
+**Request Body:**
+
+| Field       | Type    | Required | Description                                              |
+| ----------- | ------- | -------- | -------------------------------------------------------- |
+| `rate`      | Number  | Yes      | Rating value (1-5).                                      |
+| `comment`   | String  | No       | Optional comment about the rating.                       |
+| `user_id`   | String  | Yes      | The unique identifier of the user submitting the rating. |
+| `laptop_id` | String  | Yes      | The unique identifier of the laptop being rated.         |
+
+**Responses:**
+
+#### **Success (201):**
+```json
+{
+  "message": "Rating added successfully",
+  "rate": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "rate": 4,
+    "comment": "Great laptop, excellent performance",
+    "user_id": "507f1f77bcf86cd799439011",
+    "laptop_id": "507f1f77bcf86cd799439012",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                                         | Description                                           |
+| ----------- | ----------------------------------------------- | ----------------------------------------------------- |
+| `400`       | "Rate must be between 1 and 5"                  | Invalid rating value provided.                         |
+| `400`       | "User has already rated this laptop"            | User has already submitted a rating for this laptop.   |
+| `500`       | "Error adding rate"                             | A server-side error occurred.                          |
+
+---
+
+### **6) Update Rate by ID**
+
+**Endpoint:**
+```
+PUT /rate/updateRateById/:id
+```
+
+**Description:**
+Update an existing rate by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                       |
+| --------- | ------ | -------- | --------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the rate.|
+
+**Request Body:**
+
+| Field     | Type    | Required | Description                        |
+| --------- | ------- | -------- | ---------------------------------- |
+| `rate`    | Number  | No       | Updated rating value (1-5).        |
+| `comment` | String  | No       | Updated comment about the rating.   |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Rate updated successfully",
+  "rate": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "rate": 5,
+    "comment": "Updated: Even better after extended use",
+    "user_id": "507f1f77bcf86cd799439011",
+    "laptop_id": "507f1f77bcf86cd799439012",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:15:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                       | Description                                  |
+| ----------- | ----------------------------- | -------------------------------------------- |
+| `404`       | "Rate not found"              | No rate exists with the given ID.            |
+| `400`       | "Rate must be between 1 and 5" | Invalid rating value provided.               |
+| `500`       | "Error updating rate"         | A server-side error occurred.                |
+
+---
+
+### **7) Delete Rate by ID**
+
+**Endpoint:**
+```
+DELETE /rate/deleteRateById/:id
+```
+
+**Description:**
+Delete a rate by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                       |
+| --------- | ------ | -------- | --------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the rate.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Rate deleted successfully",
+  "rate": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "rate": 4,
+    "comment": "Great laptop, excellent performance",
+    "user_id": "507f1f77bcf86cd799439011",
+    "laptop_id": "507f1f77bcf86cd799439012",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                | Description                      |
+| ----------- | ---------------------- | -------------------------------- |
+| `404`       | "Rate not found"       | No rate exists with the given ID.|
+| `500`       | "Error deleting rate"  | A server-side error occurred.    |
+
+**Notes:**
+- The `Date_updated` field is automatically updated whenever a rate is modified
+- Users can only submit one rating per laptop (enforced by a unique compound index)
+- Rating values must be between 1 and 5
+- Comments are optional
+- Both user_id and laptop_id must reference valid existing documents in their respective collections
+--------------------------------------------------------------------------------------------------------------------------------
 
 
 
