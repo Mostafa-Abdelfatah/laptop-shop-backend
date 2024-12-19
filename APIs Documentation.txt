@@ -1108,5 +1108,316 @@ Delete a category by its exact name.
 - When deleting a category, ensure there are no laptops associated with it to maintain data integrity
 --------------------------------------------------------------------------------------
 
+Brand APIs:-
+
+### **1) Get All Brands**
+
+**Endpoint:**
+```
+GET /brand/getAllBrands
+```
+
+**Description:**
+Retrieve a paginated list of all brands.
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalBrands": 25,
+  "totalPages": 3,
+  "currentPage": 1,
+  "brands": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "name": "Dell",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    },
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef13",
+      "name": "HP",
+      "Date_created": "2024-12-18T09:15:30.511Z",
+      "Date_updated": "2024-12-18T09:15:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                         |
+| ----------- | ----------------------- | ----------------------------------- |
+| `500`       | "Error fetching brands" | A server-side error occurred.       |
+
+---
+
+### **2) Get Brand by ID**
+
+**Endpoint:**
+```
+GET /brand/getBrandById/:id
+```
+
+**Description:**
+Retrieve a single brand by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                        |
+| --------- | ------ | -------- | ---------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the brand.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "_id": "63a1b2c34f8e5c0024c6ef12",
+  "name": "Dell",
+  "Date_created": "2024-12-19T10:10:30.511Z",
+  "Date_updated": "2024-12-19T10:10:30.511Z"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                         | Description                       |
+| ----------- | ------------------------------- | --------------------------------- |
+| `404`       | "Brand not found"               | No brand exists with the given ID.|
+| `500`       | "Error fetching brand by ID"    | A server-side error occurred.     |
+
+---
+
+### **3) Get Brands by Name**
+
+**Endpoint:**
+```
+GET /brand/getBrandsByName/:name
+```
+
+**Description:**
+Retrieve brands with a matching name (case-insensitive, partial match supported).
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                         |
+| --------- | ------ | -------- | ----------------------------------- |
+| `name`    | String | Yes      | The partial or full name of a brand.|
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalBrands": 2,
+  "totalPages": 1,
+  "currentPage": 1,
+  "brands": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "name": "Dell",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                          | Description                             |
+| ----------- | -------------------------------- | --------------------------------------- |
+| `404`       | "No brands found with the given name" | No brands matched the search query.    |
+| `500`       | "Error fetching brands by name"  | A server-side error occurred.           |
+
+---
+
+### **4) Add Brand**
+
+**Endpoint:**
+```
+POST /brand/addBrand
+```
+
+**Description:**
+Create a new brand.
+
+**Request Body:**
+
+| Field  | Type   | Required | Description           |
+| ------ | ------ | -------- | --------------------- |
+| `name` | String | Yes      | The name of the brand.|
+
+**Responses:**
+
+#### **Success (201):**
+```json
+{
+  "message": "Brand added successfully",
+  "brand": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Dell",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message              | Description                      |
+| ----------- | ------------------- | -------------------------------- |
+| `500`       | "Error adding brand" | A server-side error occurred.    |
+
+---
+
+### **5) Update Brand by ID**
+
+**Endpoint:**
+```
+PUT /brand/updateBrandById/:id
+```
+
+**Description:**
+Update the details of a brand by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                        |
+| --------- | ------ | -------- | ---------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the brand.|
+
+**Request Body:**
+
+| Field  | Type   | Required | Description           |
+| ------ | ------ | -------- | --------------------- |
+| `name` | String | Yes      | The name of the brand.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Brand updated successfully",
+  "brand": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Dell Inc",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:15:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                       |
+| ----------- | ----------------------- | --------------------------------- |
+| `404`       | "Brand not found"       | No brand exists with the given ID.|
+| `500`       | "Error updating brand"  | A server-side error occurred.     |
+
+---
+
+### **6) Delete Brand by ID**
+
+**Endpoint:**
+```
+DELETE /brand/deleteBrandById/:id
+```
+
+**Description:**
+Delete a brand by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                        |
+| --------- | ------ | -------- | ---------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the brand.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Brand deleted successfully",
+  "brand": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Dell",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                       |
+| ----------- | ----------------------- | --------------------------------- |
+| `404`       | "Brand not found"       | No brand exists with the given ID.|
+| `500`       | "Error deleting brand"  | A server-side error occurred.     |
+
+---
+
+### **7) Delete Brand by Name**
+
+**Endpoint:**
+```
+DELETE /brand/deleteBrandByName/:name
+```
+
+**Description:**
+Delete a brand by its exact name.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                |
+| --------- | ------ | -------- | -------------------------- |
+| `name`    | String | Yes      | The exact name of the brand.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Brand with name \"[name]\" deleted successfully",
+  "brand": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Dell",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                               | Description                         |
+| ----------- | ------------------------------------- | ----------------------------------- |
+| `404`       | "No brand found with the given name"  | No brand exists with the given name.|
+| `500`       | "Error deleting brand by name"        | A server-side error occurred.       |
+
+**Notes:**
+- The `Date_updated` field is automatically updated whenever a brand is modified
+- All name searches are case-insensitive
+- Brands must have unique names
+- When deleting a brand, ensure there are no laptops associated with it to maintain data integrity
+----------------------------------------------------------------------------------------------------------------------------
+
+
 
 
