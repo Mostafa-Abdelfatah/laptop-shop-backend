@@ -33,6 +33,11 @@ const laptopSchema = new mongoose.Schema({
         ref: 'Category',
         required: true,
     },
+    brand_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand',
+        required: true,
+    },
 });
 laptopSchema.pre('findOneAndUpdate', function (next) {
     this.set({ Date_updated: new Date() });
