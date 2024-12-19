@@ -16,6 +16,43 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  image:{
+    type:String
+  },
+  password:{
+    type:String,
+    required:true
+  },
+  email:{
+    type:String,
+    required:true,
+    unique:true
+  },
+  Date_created: {
+    type: Date,
+    default: Date.now,
+  },
+  Date_updated: {
+    type: Date,
+    default: Date.now,
+  },
 });
+userSchema.pre('findOneAndUpdate', function (next) {
+  this.set({ Date_updated: new Date() });
+  next();
+});
+
+userSchema.pre('updateOne', function (next) {
+  this.set({ Date_updated: new Date() });
+  next();
+});
+
+// userSchema.pre('save', function (next) {
+//   if (this.isNew) {
+//     this.Date_updated = this.Date_created;
+//   }
+//   next();
+// });
+
 
 module.exports = mongoose.model('User', userSchema);
