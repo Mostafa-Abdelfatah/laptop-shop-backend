@@ -3,3 +3,4 @@
 3) user auth
 4) cart & orders
 5) deploy
+6) make user update the rate he/she made
