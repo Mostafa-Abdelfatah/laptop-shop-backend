@@ -1,12 +1,22 @@
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
-    if (users.length === 0) {
+    const page = parseInt(req.query.page) || 1; // here isnstead of retreiving all the users from the database we are retreiving only 10 users to prevent the server from crashing
+    const limit = parseInt(req.query.limit) || 10; // so we send the users page by page & every page contains 10 users
+    const skip = (page - 1) * limit;
+    const users = await User.find().skip(skip).limit(limit);
+    if (users.length === 0)
       return res.status(404).json({ message: 'No users found' });
-    }
-    res.status(200).json(users);
+    const totalUsers = await User.countDocuments();
+    res.status(200).json({
+      success: true,
+      totalUsers,
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      data: users
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -38,15 +48,8 @@ const getUserByEmail = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const user = await User.create(req.body);
-    /**
-     * const { attr } = req.body;
-     * const user = new User(
-     * {
-     *   attr
-     * });
-     * await user.save();
-     */ // we can use this approach to control over the creation process to add custom validations
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({ ...req.body, password: hashedPassword });
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
