@@ -808,4 +808,305 @@ Error Responses:
 
 --------------------------------------------------------------------------------------
 
+Category APIs:-
+
+### **1) Get All Categories**
+
+**Endpoint:**
+```
+GET /category/getAllCategories
+```
+
+**Description:**
+Retrieve a paginated list of all categories.
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalCategories": 25,
+  "totalPages": 3,
+  "currentPage": 1,
+  "categories": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "name": "Gaming Laptops",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    },
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef13",
+      "name": "Business Laptops",
+      "Date_created": "2024-12-18T09:15:30.511Z",
+      "Date_updated": "2024-12-18T09:15:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                                    | Description                                |
+| ----------- | ------------------------------------------ | ------------------------------------------ |
+| `404`       | "No categories found"                      | No categories exist in the database.       |
+| `500`       | "Error fetching categories"                | A server-side error occurred.              |
+
+---
+
+### **2) Get Category by ID**
+
+**Endpoint:**
+```
+GET /category/getCategoryById/:id
+```
+
+**Description:**
+Retrieve a single category by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                           |
+| --------- | ------ | -------- | ------------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the category.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "_id": "63a1b2c34f8e5c0024c6ef12",
+  "name": "Gaming Laptops",
+  "Date_created": "2024-12-19T10:10:30.511Z",
+  "Date_updated": "2024-12-19T10:10:30.511Z"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                          |
+| ----------- | ----------------------- | ------------------------------------ |
+| `404`       | "Category not found"    | No category exists with the given ID.|
+| `500`       | "Error fetching category"| A server-side error occurred.       |
+
+---
+
+### **3) Get Category by Name**
+
+**Endpoint:**
+```
+GET /category/getCategoryByName/:name
+```
+
+**Description:**
+Retrieve categories with a matching name (case-insensitive, partial match supported).
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                            |
+| --------- | ------ | -------- | -------------------------------------- |
+| `name`    | String | Yes      | The partial or full name of a category.|
+
+**Query Parameters:**
+
+| Parameter | Type    | Required | Default | Description                               |
+| --------- | ------- | -------- | ------- | ----------------------------------------- |
+| `page`    | Integer | No       | `1`     | The page number to retrieve. Starts from 1.|
+| `limit`   | Integer | No       | `10`    | The number of items per page.             |
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "totalCategories": 2,
+  "totalPages": 1,
+  "currentPage": 1,
+  "categories": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "name": "Gaming Laptops",
+      "Date_created": "2024-12-19T10:10:30.511Z",
+      "Date_updated": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                             | Description                                |
+| ----------- | ----------------------------------- | ------------------------------------------ |
+| `404`       | "No categories found with this name"| No categories matched the search query.    |
+| `500`       | "Error fetching categories by name" | A server-side error occurred.              |
+
+---
+
+### **4) Add Category**
+
+**Endpoint:**
+```
+POST /category/addCategory
+```
+
+**Description:**
+Create a new category.
+
+**Request Body:**
+
+| Field  | Type   | Required | Description              |
+| ------ | ------ | -------- | ------------------------ |
+| `name` | String | Yes      | The name of the category.|
+
+**Responses:**
+
+#### **Success (201):**
+```json
+{
+  "message": "Category added successfully",
+  "category": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Gaming Laptops",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:10:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                 | Description                      |
+| ----------- | ----------------------- | -------------------------------- |
+| `400`       | "Error adding category" | Invalid or missing request data. |
+| `500`       | "Internal Server Error" | A server-side error occurred.    |
+
+---
+
+### **5) Update Category by ID**
+
+**Endpoint:**
+```
+PUT /category/updateCategoryById/:id
+```
+
+**Description:**
+Update the details of a category by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                           |
+| --------- | ------ | -------- | ------------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the category.|
+
+**Request Body:**
+
+| Field  | Type   | Required | Description              |
+| ------ | ------ | -------- | ------------------------ |
+| `name` | String | Yes      | The name of the category.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Category updated successfully",
+  "category": {
+    "_id": "63a1b2c34f8e5c0024c6ef12",
+    "name": "Premium Gaming Laptops",
+    "Date_created": "2024-12-19T10:10:30.511Z",
+    "Date_updated": "2024-12-19T10:15:30.511Z"
+  }
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                    | Description                          |
+| ----------- | -------------------------- | ------------------------------------ |
+| `404`       | "Category not found"       | No category exists with the given ID.|
+| `500`       | "Error updating category"  | A server-side error occurred.        |
+
+---
+
+### **6) Delete Category by ID**
+
+**Endpoint:**
+```
+DELETE /category/deleteCategoryById/:id
+```
+
+**Description:**
+Delete a category by its unique ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                           |
+| --------- | ------ | -------- | ------------------------------------- |
+| `id`      | String | Yes      | The unique identifier of the category.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Category deleted successfully"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                    | Description                          |
+| ----------- | -------------------------- | ------------------------------------ |
+| `404`       | "Category not found"       | No category exists with the given ID.|
+| `500`       | "Error deleting category"  | A server-side error occurred.        |
+
+---
+
+### **7) Delete Category by Name**
+
+**Endpoint:**
+```
+DELETE /category/deleteCategoryByName/:name
+```
+
+**Description:**
+Delete a category by its exact name.
+
+**Path Parameters:**
+
+| Parameter | Type   | Required | Description                   |
+| --------- | ------ | -------- | ----------------------------- |
+| `name`    | String | Yes      | The exact name of the category.|
+
+**Responses:**
+
+#### **Success (200):**
+```json
+{
+  "message": "Category deleted successfully"
+}
+```
+
+#### **Error Responses:**
+
+| Status Code | Message                    | Description                            |
+| ----------- | -------------------------- | -------------------------------------- |
+| `404`       | "Category not found"       | No category exists with the given name.|
+| `500`       | "Error deleting category"  | A server-side error occurred.          |
+
+**Notes:**
+- The `Date_updated` field is automatically updated whenever a category is modified
+- All name searches are case-insensitive
+- Categories must have unique names
+- When deleting a category, ensure there are no laptops associated with it to maintain data integrity
+--------------------------------------------------------------------------------------
+
+
 
