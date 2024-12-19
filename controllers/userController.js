@@ -3,17 +3,35 @@ const bcrypt = require('bcrypt');
 
 const getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // here isnstead of retreiving all the users from the database we are retreiving only 10 users to prevent the server from crashing
-    const limit = parseInt(req.query.limit) || 10; // so we send the users page by page & every page contains 10 users
-    const skip = (page - 1) * limit;
-    const users = await User.find().skip(skip).limit(limit);
+    const {Fname,Lname,email,page=1,limit=10,sort='desc'} = req.query
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) 
+      return res.status(400).json({ message: 'Page and limit must be numbers.' });
+    const validSort = ['asc', 'desc'];
+    if (!validSort.includes(sort)) 
+      return res.status(400).json({ message: 'Invalid sort value. Use "asc" or "desc".' });
+    /**
+     * here isnstead of retreiving all the users from the database we are retreiving only 10 users to prevent the server from crashing
+     * so we send the users page by page & every page contains 10 users
+     * then we search for the users by Fname or Lname or email (Optionally beside page & limit)
+     * beside all of that we can sort the users descending or ascending by date created
+     */
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const filter = {};
+    if(Fname) filter.Fname = {$regex: Fname, $options: 'i'} // 'i' for case insensitive
+    if(Lname) filter.Lname = {$regex: Lname, $options: 'i'}
+    if(email) filter.email = {$regex: email, $options: 'i'}
+    const sortOrder = sort === 'asc' ? 1 : -1; // 1 for ascending & -1 for descending & default is descending
+    const users = await User.find(filter) // filtering (Searh by Fname or Lname or email)
+    .sort({Date_created: sortOrder})
+    .skip(skip)
+    .limit(limit); // Pagination 
     if (users.length === 0)
       return res.status(404).json({ message: 'No users found' });
-    const totalUsers = await User.countDocuments();
+    const totalUsers = await User.countDocuments(filter);
     res.status(200).json({
       success: true,
       totalUsers,
-      currentPage: page,
+      currentPage: parseInt(page),
       totalPages: Math.ceil(totalUsers / limit),
       data: users
     });

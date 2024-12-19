@@ -1,0 +1,79 @@
+User APIs:-
+
+1) Get All Users (Search)
+
+Endpoint:
+GET /user/getAllUsers
+
+Description:
+Retrieve a paginated list of users with optional filters and sorting by creation date.
+
+Query Parameters:
+Parameter	    Type	     Required	  Default       	Description
+page	        Integer	   No	           1	          The page number to retrieve. Starts from 1.
+limit	        Integer	   No	           10         	The number of users to retrieve per page.
+Fname	        String	   No	           -	          Filter users by their first name. (Case-insensitive search)
+Lname	        String	   No	           -	          Filter users by their last name. (Case-insensitive search)
+email	        String	   No	           -	          Filter users by their email. (Case-insensitive search)
+sort	        String	   No	           desc	        Sort the results by creation date. Use asc for ascending or desc for descending order.
+
+Responses:
+
+Success (200):
+{
+  "success": true,
+  "totalUsers": 25,
+  "currentPage": 1,
+  "totalPages": 3,
+  "data": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "Fname": "John",
+      "Lname": "Doe",
+      "email": "john.doe@example.com",
+      "Date_created": "2024-12-19T10:10:30.511Z"
+    },
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef13",
+      "Fname": "Jane",
+      "Lname": "Smith",
+      "email": "jane.smith@example.com",
+      "Date_created": "2024-12-18T09:15:30.511Z"
+    }
+  ]
+}
+Error Responses:
+
+Status Code	      Message	                                     Description
+400	             "Invalid sort value. Use 'asc' or 'desc'."	   The provided sort parameter is invalid.
+400	             "Page must be a positive integer."	           The provided page parameter is invalid.
+400	             "Limit must be a positive integer."	         The provided limit parameter is invalid.
+404	             "No users found"                          	   No users match the filter criteria.
+500	             "Internal Server Error"	                     A server-side error occurred.
+
+Example Combine Pagination, Sorting, and Filtering:
+
+GET /user/getAllUsers?Fname=John&sort=asc&page=1&limit=1
+
+Response:
+{
+  "success": true,
+  "totalUsers": 2,
+  "currentPage": 1,
+  "totalPages": 2,
+  "data": [
+    {
+      "_id": "63a1b2c34f8e5c0024c6ef12",
+      "Fname": "John",
+      "Lname": "Doe",
+      "email": "john.doe@example.com",
+      "Date_created": "2024-12-19T10:10:30.511Z"
+    }
+  ]
+}
+
+notes:
+Default Behavior:
+
+- If no query parameters are provided, the endpoint returns the first page of users (10 users per page, sorted by desc).
+- Use the optional query parameters (Fname, Lname, email) to implement search functionality in the frontend.
