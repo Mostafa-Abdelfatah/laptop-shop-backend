@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const userRoutes = require('./routes/userRoutes.js');
 const laptopRoutes = require('./routes/laptopRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
+const brandRoutes = require('./routes/brandRoutes')
 
 app.use(cors());
 app.use(express.json()); // this allow us to use json to send and receive data
@@ -24,3 +25,4 @@ app.get('/', (req, res) => {
 app.use('/user', userRoutes)
 app.use('/laptop', laptopRoutes)
 app.use('/category', categoryRoutes)
+app.use('/brand', brandRoutes)
