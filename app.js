@@ -2,6 +2,7 @@ const { connectDB, app, express } = require('./config/db.js');
 const cors = require('cors');
 const helmet = require('helmet');
 const userRoutes = require('./routes/userRoutes.js');
+const laptopRoutes = require('./routes/laptopRoutes')
 
 app.use(cors());
 app.use(express.json()); // this allow us to use json to send and receive data
@@ -20,3 +21,4 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRoutes)
+app.use('/laptop', laptopRoutes)
