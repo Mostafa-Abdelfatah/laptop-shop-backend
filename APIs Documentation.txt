@@ -738,21 +738,19 @@ Response:
   ]
 }
 
-Here’s the documentation reformatted to make it easily copyable into a plain text file with ASCII-style tables:
-Get Laptops by Category ID
+
+### **8)Get Laptops by Brand ID with Pagination**
 
 Endpoint:
 
-GET /laptop/getLaptopsByCategoryId/:id
-
-Description: Retrieve laptops associated with a specific category ID, with optional pagination support.
+GET /laptop/getLaptopsByBrandId/:id
 
 Path Parameters:
 
 +-----------+--------+----------+-------------------------------------+
 | Parameter | Type   | Required | Description                         |
 +-----------+--------+----------+-------------------------------------+
-| id        | String | Yes      | The unique ID of the category.      |
+| id        | String | Yes      | The unique ID of the brand.         |
 +-----------+--------+----------+-------------------------------------+
 
 Query Parameters:
@@ -760,8 +758,8 @@ Query Parameters:
 +-----------+---------+----------+---------+--------------------------------------------+
 | Parameter | Type    | Required | Default | Description                                |
 +-----------+---------+----------+---------+--------------------------------------------+
-| page      | Integer | No       | 1       | The page number to retrieve. Starts at 1.  |
-| limit     | Integer | No       | 10      | The number of items to retrieve per page.  |
+| page      | Integer | No       | 1       | The page number to retrieve. Starts at 1. |
+| limit     | Integer | No       | 10      | The number of items to retrieve per page. |
 +-----------+---------+----------+---------+--------------------------------------------+
 
 Response:
@@ -779,7 +777,7 @@ Success (200):
       "stock": 10,
       "price": 800,
       "photo": "https://example.com/dell-inspiron.jpg",
-      "category_id": "63f15d01fabcde1234",
+      "brand_id": "63f15d01fabcde1234",
       "Date_created": "2024-12-18T12:00:00.000Z",
       "Date_updated": "2024-12-18T12:00:00.000Z"
     },
@@ -790,7 +788,7 @@ Success (200):
       "stock": 5,
       "price": 1500,
       "photo": "https://example.com/dell-xps.jpg",
-      "category_id": "63f15d01fabcde1234",
+      "brand_id": "63f15d01fabcde1234",
       "Date_created": "2024-12-18T12:00:00.000Z",
       "Date_updated": "2024-12-18T12:00:00.000Z"
     }
@@ -798,11 +796,12 @@ Success (200):
 }
 
 Error Responses:
+
 +-------------+-----------------------------------------+---------------------------------------------+
 | Status Code | Message                                 | Description                                 |
 +-------------+-----------------------------------------+---------------------------------------------+
-| 404         | "No laptops found for this category"    | No laptops were found for the given category ID. |
-| 500         | "Error fetching laptops by category"    | A server-side error occurred.              |
+| 404         | "No laptops found for this brand"       | No laptops were found for the given brand ID. |
+| 500         | "Error fetching laptops by brand"       | A server-side error occurred.              |
 +-------------+-----------------------------------------+---------------------------------------------+
 
 
