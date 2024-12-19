@@ -5,6 +5,8 @@ const laptopController = require('../controllers/laptopController')
 router.get('/getLaptopById/:id', laptopController.getLaptopById);
 router.get('/getAllLaptops', laptopController.getAllLaptops);
 router.get('/getLaptopsByName/:name', laptopController.getLaptopsByName);
+router.get('/getLaptopsByCategoryId/:id', laptopController.getLaptopsByCategoryId);
+
 
 router.post('/addLaptop', laptopController.addLaptop);
 

@@ -106,6 +106,34 @@ const deleteLaptopById = async (req, res) => {
     }
 };
 
+const getLaptopsByCategoryId = async (req, res) => {
+    try {
+        const { id } = req.params; // Extract category ID from URL
+        const page = parseInt(req.query.page) || 1; // Current page number
+        const limit = parseInt(req.query.limit) || 10; // Number of items per page
+        const skip = (page - 1) * limit; // Calculate the number of documents to skip
+
+        const laptops = await Laptop.find({ category_id: id })
+            .skip(skip)
+            .limit(limit);
+
+        const totalLaptops = await Laptop.countDocuments({ category_id: id });
+
+        if (laptops.length === 0) {
+            return res.status(404).json({ message: 'No laptops found for this category' });
+        }
+
+        res.status(200).json({
+            totalLaptops,
+            totalPages: Math.ceil(totalLaptops / limit),
+            currentPage: page,
+            laptops,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching laptops by category', error: error.message });
+    }
+};
+
 module.exports = {
     getLaptopById,
     getAllLaptops,
@@ -113,4 +141,5 @@ module.exports = {
     addLaptop,
     updateLaptopById,
     deleteLaptopById,
+    getLaptopsByCategoryId,
 };
