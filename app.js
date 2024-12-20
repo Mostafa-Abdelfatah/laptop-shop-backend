@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes.js');
 const laptopRoutes = require('./routes/laptopRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
 const brandRoutes = require('./routes/brandRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 const rateRoutes = require('./routes/rateRoutes')
 
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRoutes)
+app.use('/auth', authRoutes)
 app.use('/laptop', laptopRoutes)
 app.use('/category', categoryRoutes)
 app.use('/brand', brandRoutes)
