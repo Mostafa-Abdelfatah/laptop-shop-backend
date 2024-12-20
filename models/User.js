@@ -22,19 +22,13 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'email is required'],
+    required: true,
     unique: true,
     lowercase: true
   },
   password: {
     type: String,
-    required: [true, 'password is required'],
-    validate: {
-      validator: (value) => {
-        return value.trim().length >= 6;
-      },
-      message: 'Password must be at least 6 characters long',
-    },
+    required: true
   },
 }, {timestamps: true});
 

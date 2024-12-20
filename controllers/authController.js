@@ -1,42 +1,60 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const asyncHandler = require('express-async-handler');
-const ApiError = require('../utils/ApiError');
 const createToken = require('../utils/createToken');
 const User = require('../models/User');
+const blacklist = require('../middleware/blackList')
 
-const register = asyncHandler(async (req, res, next) => {
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  const user = await User.create({ ...req.body, password: hashedPassword });
-  const token = createToken(user._id);
-  res.status(201).json({ data: user, token });
-});
 
-const login = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    return next(new ApiError('Incorrect email or password', 401));
-  }
-  const token = createToken(user._id);
-  delete user._doc.password;
-  res.status(200).json({ data: user, token });
-});
 
-const protect = asyncHandler(async (req, res, next) => {
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1];
+const register = async (req,res) => {
+  try{
+    const existingUser = await User.findOne({email:req.body.email});
+    if(existingUser){
+      return res.status(400).json({message:"User already exists"});
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({ ...req.body, password: hashedPassword });
+    const token = createToken(user._id);
+    res.status(201).json({ message: 'User Registered successfully', data: user, token });
+  }catch(error){
+    res.status(500).json({ message: 'Error registering user', error: error.message });
   }
-  if (!token) {
-    return next(new ApiError('You are not login, Please login to get access this route',401));
-  }
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  const currentUser = await User.findById(decoded.userId);
-  if (!currentUser) {
-    return next(new ApiError('The user that belong to this token does no longer exist', 401));
-  }
-  req.user = currentUser;
-  next();
-});
+}
 
-module.exports = { register, login, protect };
+const login = async (req,res) => {
+  try{
+    const user = await User.findOne({ email: req.body.email })
+    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      return res.status(400).json({message:"Incorrect email or password"});
+    }
+    const token = createToken(user._id);
+    user.password = undefined;
+    res.status(200).json({ message: 'User logged in successfully', data: user, token });
+  }catch(err){
+    res.status(500).json({ message: 'Error logging in user', error: error.message });
+  }
+}
+
+const getProfile = async (req,res) => {
+  try{
+    res.status(200).json({user:req.user});
+  }catch(err){
+    res.status(500).json({ message: 'Error fetching user profile', error: error.message });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'Token is missing' });
+    }
+    blacklist.add(token);
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error logging out', error: err.message });
+  }
+};
+
+
+
+module.exports = { register, login, getProfile, logout };
