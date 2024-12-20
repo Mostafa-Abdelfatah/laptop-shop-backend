@@ -53,6 +53,7 @@ const getAllLaptops = async (req, res) => {
             page = 1, // Current page number
             limit = 10, // Number of items per page
             sort, // Sort order (asc or desc)
+            displaySize, // Filter by display size
         } = req.query;
 
         // Initialize query object
@@ -115,6 +116,10 @@ const getAllLaptops = async (req, res) => {
             query.rate = parseFloat(rate); // Exact match for rate
         }
 
+        if (displaySize) {
+            query.displaySize = { $regex: displaySize, $options: 'i' }; // Case-insensitive match
+        }
+        
         // Determine sort order
         const sortOrder = sort === 'desc' ? -1 : 1; // Default to ascending if sort is not provided
 

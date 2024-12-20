@@ -60,6 +60,10 @@ const laptopSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    displaySize:{
+        type:String,
+        required:true,
+    }
 });
 laptopSchema.pre('findOneAndUpdate', function (next) {
     this.set({ Date_updated: new Date() });
