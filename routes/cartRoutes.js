@@ -5,13 +5,11 @@ const cartController = require('../controllers/cartController');
 
 router.post('/addCart', cartController.addCart);
 
-// router.get('/getAllCarts', cartController.getAllCarts);
-// router.get('/getCartById/:id', cartController.CartById);
-// router.get('/getCartsByName/:name', cartController.getCartsByName);
+router.get('/getAllCarts', cartController.getAllCarts);
+router.get('/getCartById/:id', cartController.CartById);
+router.get('/getCartByUserId/:id', cartController.CartByUserId);
 
-// router.put('/updateCartById/:id', cartController.updateCartById);
+router.delete('/deleteCartById/:id', cartController.deleteCartById);
 
-// router.delete('/deleteCartById/:id', cartController.deleteCartById);
-// router.delete('/deleteCartByName/:name', cartController.deleteCartByName);
 
 module.exports = router;
