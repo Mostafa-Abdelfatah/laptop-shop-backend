@@ -1,11 +1,14 @@
 const Rate = require('../models/Rate');
+const Laptop = require('../models/Laptop')
+const {Types} = require("mongoose");
 
-
-//Add a new rate
 const addRate = async (req, res) => {
     try {
         const newRate = new Rate(req.body);
         await newRate.save();
+
+        // Update the laptop's average rate
+        await updateLaptopAverageRate(newRate.laptop_id);
 
         res.status(201).json({ message: 'Rating added successfully', rate: newRate });
     } catch (error) {
@@ -95,21 +98,25 @@ const getRatesByLaptopId = async (req, res) => {
     }
 };
 
-// Update rate by ID
 const updateRateById = async (req, res) => {
     try {
         const { id } = req.params;
         const { rate, comment } = req.body;
 
+        const existingRate = await Rate.findById(id);
+        if (!existingRate) {
+            return res.status(404).json({ message: 'Rate not found' });
+        }
+
+        // Update the rate
         const updatedRate = await Rate.findByIdAndUpdate(
             id,
             { rate, comment, Date_updated: new Date() },
             { new: true }
         );
 
-        if (!updatedRate) {
-            return res.status(404).json({ message: 'Rate not found' });
-        }
+        // Update the laptop's average rate
+        await updateLaptopAverageRate(existingRate.laptop_id);
 
         res.status(200).json({ message: 'Rate updated successfully', rate: updatedRate });
     } catch (error) {
@@ -117,22 +124,48 @@ const updateRateById = async (req, res) => {
     }
 };
 
-// Delete rate by ID
 const deleteRateById = async (req, res) => {
     try {
         const { id } = req.params;
 
         const deletedRate = await Rate.findByIdAndDelete(id);
-
         if (!deletedRate) {
             return res.status(404).json({ message: 'Rate not found' });
         }
+
+        // Update the laptop's average rate
+        await updateLaptopAverageRate(deletedRate.laptop_id);
 
         res.status(200).json({ message: 'Rate deleted successfully', rate: deletedRate });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting rate', error: error.message });
     }
 };
+
+
+
+const updateLaptopAverageRate = async (laptopId) => {
+    try {
+        // Calculate the new average rate
+        const result = await Rate.aggregate([
+            { $match: { laptop_id: new Types.ObjectId(laptopId) } }, // Use 'new' with ObjectId
+            { $group: { _id: "$laptop_id", averageRate: { $avg: "$rate" } } },
+        ]);
+        console.log(laptopId)
+
+        const averageRate = result.length > 0 ? result[0].averageRate : 0;
+        console.log(averageRate)
+
+        // Update the laptop with the new average rate
+        await Laptop.findByIdAndUpdate(laptopId, { rate: averageRate });
+    } catch (error) {
+        console.error("Error updating laptop average rate:", error.message);
+        throw error;
+    }
+};
+
+
+
 
 module.exports = {
     addRate,
