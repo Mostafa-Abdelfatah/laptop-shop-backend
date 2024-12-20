@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes')
 const rateRoutes = require('./routes/rateRoutes')
 
 const cartRoutes = require('./routes/cartRoutes')
+const cartItemRoutes = require('./routes/cartItemRoutes')
 
 
 app.use(cors());
@@ -37,4 +38,5 @@ app.use('/brand', brandRoutes)
 app.use('/rate', rateRoutes)
 
 app.use('/cart', cartRoutes)
+app.use('/cartItem', cartItemRoutes)
 
