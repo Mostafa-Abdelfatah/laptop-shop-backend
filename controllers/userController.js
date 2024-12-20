@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const Cart = require('../models/Cart')
 
 const getAllUsers = async (req, res) => {
   try {
@@ -64,15 +65,36 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
+// const addUser = async (req, res) => {
+//   try {
+//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+//     const user = await User.create({ ...req.body, password: hashedPassword });
+//     res.status(201).json(user);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 const addUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // Create the user
     const user = await User.create({ ...req.body, password: hashedPassword });
-    res.status(201).json(user);
+
+    // Create a cart for the new user
+    const cart = await Cart.create({ user_id: user._id });
+
+    res.status(201).json({
+      message: 'User and cart created successfully',
+      user,
+      cart,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 const updateUserById = async (req, res) => {
   try {
@@ -106,29 +128,65 @@ const updateUserByEmail = async (req, res) => {
   }
 };
 
+// const deleteUserById = async (req, res) => {
+//   try {
+//     const deletedUser = await User.findByIdAndDelete(req.params.id);
+//     if (!deletedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+//     res.status(200).json({ message: 'User deleted successfully' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error deleting user', error: error.message });
+//   }
+// };
+
 const deleteUserById = async (req, res) => {
   try {
+    // Find and delete the user
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({ message: 'User deleted successfully' });
+
+    // Delete the associated cart
+    await Cart.findOneAndDelete({ user_id: deletedUser._id });
+
+    res.status(200).json({ message: 'User and their cart deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 };
 
+
+// const deleteUserByEmail = async (req, res) => {
+//   try {
+//     const deletedUser = await User.findOneAndDelete({ email: req.params.email });
+//     if (!deletedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+//     res.status(200).json({ message: 'User deleted successfully' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error deleting user', error: error.message });
+//   }
+// };
+
 const deleteUserByEmail = async (req, res) => {
   try {
+    // Find and delete the user
     const deletedUser = await User.findOneAndDelete({ email: req.params.email });
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({ message: 'User deleted successfully' });
+
+    // Delete the associated cart
+    await Cart.findOneAndDelete({ user_id: deletedUser._id });
+
+    res.status(200).json({ message: 'User and their cart deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 };
+
 
 module.exports = {
   getAllUsers,

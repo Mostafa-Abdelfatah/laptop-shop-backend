@@ -41,7 +41,7 @@ const CartById = async (req, res) => {
 const CartByUserId = async (req, res) => {
     try {
         // const { user_id } = req.params; 
-        console.log(req.params)
+        //console.log(req.params)
         //   const cart = await Cart.find(req.params.id);
         const cart = await Cart.findOne({ user_id: new mongoose.Types.ObjectId(req.params.id) });
         if (!cart) {
