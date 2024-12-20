@@ -41,7 +41,7 @@ const laptopSchema = new mongoose.Schema({
     rate:{
         type:Number,
         default: 0,
-        min: [0, 'Rate must be at least 1'], // Minimum value is 0
+        min: [0, 'Rate must be at least 0'], // Minimum value is 0
         max: [5, 'Rate must be at most 5'], // Maximum value is 5
     },
     storage:{
