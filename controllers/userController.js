@@ -22,7 +22,7 @@ const getAllUsers = async (req, res) => {
     if(email) filter.email = {$regex: email, $options: 'i'}
     const sortOrder = sort === 'asc' ? 1 : -1; // 1 for ascending & -1 for descending & default is descending
     const users = await User.find(filter) // filtering (Searh by Fname or Lname or email)
-    .sort({Date_created: sortOrder})
+    .sort({createdAt: sortOrder})
     .skip(skip)
     .limit(limit); // Pagination 
     if (users.length === 0)

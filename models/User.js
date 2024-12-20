@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   Fname: {
     type: String,
-    required: [true, 'Please add a name']
+    required: [true, 'First name is required'],
   },
   Lname: {
     type: String,
@@ -22,38 +22,21 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true
+    required: [true, 'email is required'],
+    unique: true,
+    lowercase: true
   },
   password: {
     type: String,
-    required: true
+    required: [true, 'password is required'],
+    validate: {
+      validator: (value) => {
+        return value.trim().length >= 6;
+      },
+      message: 'Password must be at least 6 characters long',
+    },
   },
-  Date_created: {
-    type: Date,
-    default: Date.now,
-  },
-  Date_updated: {
-    type: Date,
-    default: Date.now,
-  },
-});
-userSchema.pre('findOneAndUpdate', function (next) {
-  this.set({ Date_updated: new Date() });
-  next();
-});
-
-userSchema.pre('updateOne', function (next) {
-  this.set({ Date_updated: new Date() });
-  next();
-});
-
-// userSchema.pre('save', function (next) {
-//   if (this.isNew) {
-//     this.Date_updated = this.Date_created;
-//   }
-//   next();
-// });
+}, {timestamps: true});
 
 
 module.exports = mongoose.model('User', userSchema);
