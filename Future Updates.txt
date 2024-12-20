@@ -4,3 +4,4 @@
 4) cart & orders
 5) deploy
 6) make user update the rate he/she made
+7) I need to add a validation on the stock when getting laptops (mostafa)
