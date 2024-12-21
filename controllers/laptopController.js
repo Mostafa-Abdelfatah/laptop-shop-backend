@@ -1,7 +1,8 @@
 const Laptop = require('../models/Laptop');
-const mongoose = require('mongoose');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
+const cloudinary = require('../utils/cloudinary');
+const { DEFAULT_LAPTOP_PHOTO } = require('../config/constants');
 
 // Get laptop by ID
 const getLaptopById = async (req, res) => {
@@ -119,7 +120,7 @@ const getAllLaptops = async (req, res) => {
         if (displaySize) {
             query.displaySize = { $regex: displaySize, $options: 'i' }; // Case-insensitive match
         }
-        
+
         // Determine sort order
         const sortOrder = sort === 'desc' ? -1 : 1; // Default to ascending if sort is not provided
 
@@ -143,49 +144,11 @@ const getAllLaptops = async (req, res) => {
     }
 };
 
-
-
-
-// Get laptops by partial name match with pagination
-// const getLaptopsByName = async (req, res) => {
-//     try {
-//         const page = parseInt(req.query.page) || 1;
-//         const limit = parseInt(req.query.limit) || 10;
-//         const skip = (page - 1) * limit;
-//
-//         const query = req.params.name;
-//
-//         const laptops = await Laptop.find({
-//             name: { $regex: query, $options: 'i' },
-//         })
-//             .skip(skip)
-//             .limit(limit);
-//
-//         const totalLaptops = await Laptop.countDocuments({
-//             name: { $regex: query, $options: 'i' },
-//         });
-//
-//         if (laptops.length === 0) {
-//             return res.status(404).json({ message: 'No laptops found with this name' });
-//         }
-//
-//         res.status(200).json({
-//             totalLaptops,
-//             totalPages: Math.ceil(totalLaptops / limit),
-//             currentPage: page,
-//             laptops,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error fetching laptops', error: error.message });
-//     }
-// };
-
-
 // Add a new laptop
 const addLaptop = async (req, res) => {
     try {
-        const newLaptop = new Laptop(req.body);
-        await newLaptop.save();
+        const photo = req.file ? req.file.path : DEFAULT_LAPTOP_PHOTO;
+        const newLaptop = await Laptop.create({ ...req.body, photo });
         res.status(201).json({ message: 'Laptop added successfully', laptop: newLaptop });
     } catch (error) {
         res.status(400).json({ message: 'Error adding laptop', error: error.message });
@@ -218,63 +181,24 @@ const deleteLaptopById = async (req, res) => {
     }
 };
 
-// const getLaptopsByCategoryId = async (req, res) => {
-//     try {
-//         const { id } = req.params; // Extract category ID from URL
-//         const page = parseInt(req.query.page) || 1; // Current page number
-//         const limit = parseInt(req.query.limit) || 10; // Number of items per page
-//         const skip = (page - 1) * limit; // Calculate the number of documents to skip
-//
-//         const laptops = await Laptop.find({ category_id: id })
-//             .skip(skip)
-//             .limit(limit);
-//
-//         const totalLaptops = await Laptop.countDocuments({ category_id: id });
-//
-//         if (laptops.length === 0) {
-//             return res.status(404).json({ message: 'No laptops found for this category' });
-//         }
-//
-//         res.status(200).json({
-//             totalLaptops,
-//             totalPages: Math.ceil(totalLaptops / limit),
-//             currentPage: page,
-//             laptops,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error fetching laptops by category', error: error.message });
-//     }
-// };
-//
-// const getLaptopsByBrandId = async (req, res) => {
-//     try {
-//         const { id } = req.params; // Extract brand ID from URL
-//         const page = parseInt(req.query.page) || 1; // Current page number
-//         const limit = parseInt(req.query.limit) || 10; // Number of items per page
-//         const skip = (page - 1) * limit; // Calculate the number of documents to skip
-//
-//         const laptops = await Laptop.find({ brand_id: id })
-//             .skip(skip)
-//             .limit(limit);
-//
-//         const totalLaptops = await Laptop.countDocuments({ brand_id: id });
-//
-//         if (laptops.length === 0) {
-//             return res.status(404).json({ message: 'No laptops found for this brand' });
-//         }
-//
-//         res.status(200).json({
-//             totalLaptops,
-//             totalPages: Math.ceil(totalLaptops / limit),
-//             currentPage: page,
-//             laptops,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error fetching laptops by brand', error: error.message });
-//     }
-// };
-
-
+const uploadLaptopImage = async (req, res) => {
+    try {
+        const laptop = await Laptop.findById(req.params.id);
+        if (!laptop) {
+            return res.status(404).json({ message: 'Laptop not found' });
+        }
+        if (laptop.photo && laptop.photo !== DEFAULT_LAPTOP_PHOTO) {
+            // Extract the public ID of the old image from the Cloudinary URL
+            const publicId = laptop.photo.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(publicId); // Delete the old image
+        }
+        laptop.photo = req.file.path;
+        await laptop.save();
+        res.status(200).json({ message: 'Laptop image uploaded successfully', laptop: laptop });
+    } catch (error) {
+        res.status(500).json({ message: 'Error uploading laptop image', error: error.message });
+    }
+};
 
 module.exports = {
     getLaptopById,
@@ -282,4 +206,5 @@ module.exports = {
     addLaptop,
     updateLaptopById,
     deleteLaptopById,
+    uploadLaptopImage
 };

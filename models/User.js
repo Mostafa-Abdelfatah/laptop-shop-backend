@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const DEFAULT_USER_PHOTO = require('../config/constants')
 const userSchema = new mongoose.Schema({
   Fname: {
     type: String,
@@ -16,9 +17,9 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  image: {
+  photo: {
     type: String,
-    required: false
+    default: DEFAULT_USER_PHOTO
   },
   email: {
     type: String,
@@ -30,7 +31,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-}, {timestamps: true});
+}, { timestamps: true });
 
 
 module.exports = mongoose.model('User', userSchema);

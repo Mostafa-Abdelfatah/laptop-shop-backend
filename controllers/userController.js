@@ -1,7 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const Cart = require('../models/Cart')
-
+const cloudinary = require('../utils/cloudinary');
+const {DEFAULT_USER_PHOTO,} = require('../config/constants');
 const getAllUsers = async (req, res) => {
   try {
     const {Fname,Lname,email,page=1,limit=10,sort='desc'} = req.query
@@ -65,26 +66,12 @@ const getUserByEmail = async (req, res) => {
   }
 };
 
-// const addUser = async (req, res) => {
-//   try {
-//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-//     const user = await User.create({ ...req.body, password: hashedPassword });
-//     res.status(201).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 const addUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    // Create the user
-    const user = await User.create({ ...req.body, password: hashedPassword });
-
-    // Create a cart for the new user
+    const photo = req.file ? req.file.path : DEFAULT_USER_PHOTO;
+    const user = await User.create({ ...req.body, password: hashedPassword , photo });
     const cart = await Cart.create({ user_id: user._id });
-
     res.status(201).json({
       message: 'User and cart created successfully',
       user,
@@ -92,23 +79,6 @@ const addUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
-  }
-};
-
-
-const updateUserById = async (req, res) => {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating user', error: error.message });
   }
 };
 
@@ -128,18 +98,6 @@ const updateUserByEmail = async (req, res) => {
   }
 };
 
-// const deleteUserById = async (req, res) => {
-//   try {
-//     const deletedUser = await User.findByIdAndDelete(req.params.id);
-//     if (!deletedUser) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-//     res.status(200).json({ message: 'User deleted successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting user', error: error.message });
-//   }
-// };
-
 const deleteUserById = async (req, res) => {
   try {
     // Find and delete the user
@@ -157,19 +115,6 @@ const deleteUserById = async (req, res) => {
   }
 };
 
-
-// const deleteUserByEmail = async (req, res) => {
-//   try {
-//     const deletedUser = await User.findOneAndDelete({ email: req.params.email });
-//     if (!deletedUser) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-//     res.status(200).json({ message: 'User deleted successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error deleting user', error: error.message });
-//   }
-// };
-
 const deleteUserByEmail = async (req, res) => {
   try {
     // Find and delete the user
@@ -186,7 +131,40 @@ const deleteUserByEmail = async (req, res) => {
     res.status(500).json({ message: 'Error deleting user', error: error.message });
   }
 };
+const updateUserById = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user', error: error.message });
+  }
+};
 
+
+const uploadUserImage = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (user.photo&&user.photo !== DEFAULT_USER_PHOTO) {
+      const publicId = user.photo.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
+    user.photo = req.file.path;
+    await user.save();
+    res.status(200).json({ message: 'User image uploaded successfully', user: user });
+  } catch (error) {
+    res.status(500).json({ message: 'Error uploading user image', error: error.message });
+  }
+};
 
 module.exports = {
   getAllUsers,
@@ -197,4 +175,5 @@ module.exports = {
   updateUserByEmail,
   deleteUserById,
   deleteUserByEmail,
+  uploadUserImage
 };
