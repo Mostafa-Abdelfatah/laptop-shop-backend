@@ -21,10 +21,12 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message || 'Server Error' });
 });
 
-
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.all('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
 app.use('/user', userRoutes)
